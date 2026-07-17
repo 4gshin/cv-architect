@@ -21,7 +21,8 @@ export function CVProvider({ children }) {
     education: [
       { id: 1, school: '', degree: '', startDate: '', endDate: '' }
     ],
-    skills: []
+    skills: [],
+    languages: []
   });
 
   const updatePersonalInfo = (field, value) => {

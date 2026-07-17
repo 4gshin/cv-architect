@@ -5,8 +5,7 @@ import { User, Mail, Phone, Globe, MapPin, AlignLeft, Layout, Briefcase, Graduat
 export default function FormSection() {
   const { cvData, updatePersonalInfo, template, setTemplate, setCvData } = useContext(CVContext);
   
-  // Burada || {} qoyaraq cvData-nın undefined olmasının qarşısını alırıq
-  const { personalInfo, experience = [], education = [] } = cvData || {};
+  const { personalInfo, experience = [], education = [], skills = [], languages = [] } = cvData || {};
 
   const inputFields = [
     { label: 'Tam Adınız', field: 'fullName', icon: <User size={16} />, placeholder: 'Agshin Heybatli' },
@@ -58,6 +57,28 @@ export default function FormSection() {
     setCvData(prev => ({
       ...prev,
       education: prev.education.filter(edu => edu.id !== id)
+    }));
+  };
+
+  // --- Skills & Languages Dvijeniyası ---
+  const handleAddTag = (e, field) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const value = e.target.value.trim().replace(/,$/, '');
+      if (value && !cvData[field].includes(value)) {
+        setCvData(prev => ({
+          ...prev,
+          [field]: [...prev[field], value]
+        }));
+        e.target.value = '';
+      }
+    }
+  };
+
+  const handleRemoveTag = (tag, field) => {
+    setCvData(prev => ({
+      ...prev,
+      [field]: prev[field].filter(t => t !== tag)
     }));
   };
 
@@ -270,6 +291,56 @@ export default function FormSection() {
                 />
               </div>
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 4. Bacarıqlar (Skills) */}
+      <div className="space-y-4 pt-4 border-t border-slate-100">
+        <div>
+          <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <Layout className="text-indigo-600" size={18} />
+            Bacarıqlar (Skills)
+          </h2>
+          <p className="text-xs text-slate-400 mt-0.5">Texnologiya və ya alətləri yazıb Enter sıxın.</p>
+        </div>
+        <input
+          type="text"
+          placeholder="Məs: React, Node.js, TypeScript..."
+          onKeyDown={(e) => handleAddTag(e, 'skills')}
+          className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+        />
+        <div className="flex flex-wrap gap-2">
+          {skills?.map(skill => (
+            <span key={skill} className="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 text-xs font-medium px-3 py-1 rounded-lg border border-indigo-100">
+              {skill}
+              <button type="button" onClick={() => handleRemoveTag(skill, 'skills')} className="hover:text-rose-600 font-bold cursor-pointer">×</button>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* 5. Xarici Dillər (Languages) */}
+      <div className="space-y-4 pt-4 border-t border-slate-100">
+        <div>
+          <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <Globe className="text-indigo-600" size={18} />
+            Xarici Dillər
+          </h2>
+          <p className="text-xs text-slate-400 mt-0.5">Bildiyiniz dilləri yazıb Enter sıxın.</p>
+        </div>
+        <input
+          type="text"
+          placeholder="Məs: İngilis dili (C1), Azərbaycan dili..."
+          onKeyDown={(e) => handleAddTag(e, 'languages')}
+          className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+        />
+        <div className="flex flex-wrap gap-2">
+          {languages?.map(lang => (
+            <span key={lang} className="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-lg border border-slate-200">
+              {lang}
+              <button type="button" onClick={() => handleRemoveTag(lang, 'languages')} className="hover:text-rose-600 font-bold cursor-pointer">×</button>
+            </span>
           ))}
         </div>
       </div>
