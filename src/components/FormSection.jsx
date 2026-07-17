@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { CVContext } from '../context/CVContext';
-import { User, Mail, Phone, Globe, MapPin, AlignLeft, Layout, Briefcase, GraduationCap, Plus, Trash2 } from 'lucide-react';
+import { User, Mail, Phone, Globe, MapPin, AlignLeft, Layout, Briefcase, GraduationCap, Plus, Trash2, Calendar } from 'lucide-react';
 
 export default function FormSection() {
   const { cvData, updatePersonalInfo, template, setTemplate, setCvData } = useContext(CVContext);
@@ -16,7 +16,6 @@ export default function FormSection() {
     { label: 'Ünvan', field: 'location', icon: <MapPin size={16} />, placeholder: 'Ankara, Türkiyə' }
   ];
 
-  // --- Dinamik Təcrübə (Experience) Dvijeniyaları ---
   const handleExperienceChange = (id, field, value) => {
     setCvData(prev => ({
       ...prev,
@@ -38,7 +37,6 @@ export default function FormSection() {
     }));
   };
 
-  // --- Dinamik Təhsil (Education) Dvijeniyaları ---
   const handleEducationChange = (id, field, value) => {
     setCvData(prev => ({
       ...prev,
@@ -60,7 +58,6 @@ export default function FormSection() {
     }));
   };
 
-  // --- Skills & Languages Dvijeniyası ---
   const handleAddTag = (e, field) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
@@ -200,20 +197,32 @@ export default function FormSection() {
                   onChange={(e) => handleExperienceChange(exp.id, 'role', e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
-                <input
-                  type="text"
-                  placeholder="Başlama Tarixi (Məs: 2024)"
-                  value={exp.startDate || ''}
-                  onChange={(e) => handleExperienceChange(exp.id, 'startDate', e.target.value)}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
-                />
-                <input
-                  type="text"
-                  placeholder="Bitmə Tarixi (və ya Davam edir)"
-                  value={exp.endDate || ''}
-                  onChange={(e) => handleExperienceChange(exp.id, 'endDate', e.target.value)}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
-                />
+                
+                {/* --- YENİLƏNMİŞ TARİX INPUTLARI --- */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Başlama Tarixi</label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
+                    <input
+                      type="month"
+                      value={exp.startDate || ''}
+                      onChange={(e) => handleExperienceChange(exp.id, 'startDate', e.target.value)}
+                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 cursor-pointer shadow-sm"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Bitmə Tarixi</label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
+                    <input
+                      type="month"
+                      value={exp.endDate || ''}
+                      onChange={(e) => handleExperienceChange(exp.id, 'endDate', e.target.value)}
+                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 cursor-pointer shadow-sm"
+                    />
+                  </div>
+                </div>
               </div>
               <textarea
                 rows={2}
@@ -275,20 +284,32 @@ export default function FormSection() {
                   onChange={(e) => handleEducationChange(edu.id, 'degree', e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
-                <input
-                  type="text"
-                  placeholder="Başlama Tarixi"
-                  value={edu.startDate || ''}
-                  onChange={(e) => handleEducationChange(edu.id, 'startDate', e.target.value)}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
-                />
-                <input
-                  type="text"
-                  placeholder="Bitmə Tarixi"
-                  value={edu.endDate || ''}
-                  onChange={(e) => handleEducationChange(edu.id, 'endDate', e.target.value)}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
-                />
+                
+                {/* --- YENİLƏNMİŞ TARİX INPUTLARI (TƏHSİL) --- */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Başlama Tarixi</label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
+                    <input
+                      type="month"
+                      value={edu.startDate || ''}
+                      onChange={(e) => handleEducationChange(edu.id, 'startDate', e.target.value)}
+                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 cursor-pointer shadow-sm"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Bitmə Tarixi</label>
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
+                    <input
+                      type="month"
+                      value={edu.endDate || ''}
+                      onChange={(e) => handleEducationChange(edu.id, 'endDate', e.target.value)}
+                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 cursor-pointer shadow-sm"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           ))}

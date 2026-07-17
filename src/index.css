@@ -53,3 +53,22 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* 4. Modern Month Picker Overrides (Zəmanətli Klik üçün) */
+input[type="month"] {
+  position: relative;
+  -webkit-appearance: listbox !important; /* Webkit brauzerlərdə daxili kalendarı məcbur aktiv edirik */
+}
+
+/* Kalendar picker sahəsini bütün input boyu yayırıq ki, harasından basılsa panel açılsın */
+input[type="month"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0; /* İkonu gizlədib tam sahəni kliklənən düymə edirik */
+  cursor: pointer;
+}
