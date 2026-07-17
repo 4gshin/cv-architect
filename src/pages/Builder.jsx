@@ -2,15 +2,20 @@ import FormSection from '../components/FormSection';
 import CVPreview from '../components/CVPreview';
 import { FileDown, LayoutGrid, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import html2pdf from 'html2pdf.js';
 
 export default function Builder() {
   const navigate = useNavigate();
 
   const handleExportPDF = () => {
     const element = document.getElementById('cv-a4-target');
+    if (!element) return;
     
-    // PDF export parametrləri (A4 ölçülərinə tam uyğunluq üçün)
+    const html2pdfWorker = window.html2pdf;
+    if (!html2pdfWorker) {
+      alert("PDF kitabxanası yüklənmədi, internet bağlantısını yoxlayın.");
+      return;
+    }
+
     const opt = {
       margin:       0,
       filename:     'my-professional-cv.pdf',
@@ -19,18 +24,19 @@ export default function Builder() {
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // Export zamanı zoom scale effektini müvəqqəti sıfırlayırıq ki, PDF təmiz çıxsın
     const originalTransform = element.style.transform;
     element.style.transform = 'none';
 
-    html2pdf().set(opt).from(element).save().then(() => {
-      element.style.transform = originalTransform; // Export bitəndən sonra köhnə zoom səviyyəsinə qaytarırıq
+    html2pdfWorker().set(opt).from(element).save().then(() => {
+      element.style.transform = originalTransform;
+    }).catch(err => {
+      console.error("PDF Export Error: ", err);
+      element.style.transform = originalTransform;
     });
   };
 
   return (
     <div className="h-screen bg-[#f1f5f9] flex flex-col overflow-hidden antialiased font-sans">
-      {/* Üst Panel */}
       <header className="h-14 bg-white border-b border-slate-200 px-6 flex items-center justify-between shadow-sm shrink-0">
         <div className="flex items-center gap-4">
           <button 
@@ -48,7 +54,6 @@ export default function Builder() {
           </div>
         </div>
         
-        {/* Export Düyməsi */}
         <button 
           onClick={handleExportPDF}
           className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs px-4 py-2 rounded-lg shadow-sm shadow-indigo-500/10 transition-all active:scale-95 cursor-pointer"
@@ -58,7 +63,6 @@ export default function Builder() {
         </button>
       </header>
 
-      {/* İş Masası */}
       <div className="flex-1 flex overflow-hidden">
         <div className="w-full lg:w-[45%] bg-white overflow-y-auto border-r border-slate-200/80 p-6 md:p-8 custom-scrollbar">
           <div className="max-w-xl mx-auto">

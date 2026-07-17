@@ -4,7 +4,9 @@ import { User, Mail, Phone, Globe, MapPin, AlignLeft, Layout, Briefcase, Graduat
 
 export default function FormSection() {
   const { cvData, updatePersonalInfo, template, setTemplate, setCvData } = useContext(CVContext);
-  const { personalInfo, experience, education } = cvData;
+  
+  // Burada || {} qoyaraq cvData-nın undefined olmasının qarşısını alırıq
+  const { personalInfo, experience = [], education = [] } = cvData || {};
 
   const inputFields = [
     { label: 'Tam Adınız', field: 'fullName', icon: <User size={16} />, placeholder: 'Agshin Heybatli' },
@@ -26,7 +28,7 @@ export default function FormSection() {
   const addExperience = () => {
     setCvData(prev => ({
       ...prev,
-      experience: [...prev.experience, { id: Date.now(), company: '', role: '', startDate: '', endDate: '', description: '' }]
+      experience: [...(prev.experience || []), { id: Date.now(), company: '', role: '', startDate: '', endDate: '', description: '' }]
     }));
   };
 
@@ -48,7 +50,7 @@ export default function FormSection() {
   const addEducation = () => {
     setCvData(prev => ({
       ...prev,
-      education: [...prev.education, { id: Date.now(), school: '', degree: '', startDate: '', endDate: '' }]
+      education: [...(prev.education || []), { id: Date.now(), school: '', degree: '', startDate: '', endDate: '' }]
     }));
   };
 
@@ -105,7 +107,7 @@ export default function FormSection() {
                 <input
                   type={type}
                   placeholder={placeholder}
-                  value={personalInfo[field] || ''}
+                  value={personalInfo?.[field] || ''}
                   onChange={(e) => updatePersonalInfo(field, e.target.value)}
                   className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
                 />
@@ -122,7 +124,7 @@ export default function FormSection() {
           <textarea
             rows={3}
             placeholder="Təcrübəniz və hədəfləriniz haqqında qısa xülasə..."
-            value={personalInfo.summary || ''}
+            value={personalInfo?.summary || ''}
             onChange={(e) => updatePersonalInfo('summary', e.target.value)}
             className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm resize-none"
           />
@@ -149,7 +151,7 @@ export default function FormSection() {
         </div>
 
         <div className="space-y-4">
-          {experience.map((exp, index) => (
+          {experience?.map((exp, index) => (
             <div key={exp.id} className="p-4 bg-slate-50 border border-slate-200/60 rounded-xl space-y-3 relative group">
               {experience.length > 1 && (
                 <button
@@ -166,28 +168,28 @@ export default function FormSection() {
                 <input
                   type="text"
                   placeholder="Şirkət / Müəssisə"
-                  value={exp.company}
+                  value={exp.company || ''}
                   onChange={(e) => handleExperienceChange(exp.id, 'company', e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
                 <input
                   type="text"
                   placeholder="Vəzifə / Rol"
-                  value={exp.role}
+                  value={exp.role || ''}
                   onChange={(e) => handleExperienceChange(exp.id, 'role', e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
                 <input
                   type="text"
                   placeholder="Başlama Tarixi (Məs: 2024)"
-                  value={exp.startDate}
+                  value={exp.startDate || ''}
                   onChange={(e) => handleExperienceChange(exp.id, 'startDate', e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
                 <input
                   type="text"
                   placeholder="Bitmə Tarixi (və ya Davam edir)"
-                  value={exp.endDate}
+                  value={exp.endDate || ''}
                   onChange={(e) => handleExperienceChange(exp.id, 'endDate', e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
@@ -195,7 +197,7 @@ export default function FormSection() {
               <textarea
                 rows={2}
                 placeholder="Gördüyünüz işlər və nailiyyətlər haqqında qısa məlumat..."
-                value={exp.description}
+                value={exp.description || ''}
                 onChange={(e) => handleExperienceChange(exp.id, 'description', e.target.value)}
                 className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm resize-none"
               />
@@ -224,7 +226,7 @@ export default function FormSection() {
         </div>
 
         <div className="space-y-4">
-          {education.map((edu, index) => (
+          {education?.map((edu, index) => (
             <div key={edu.id} className="p-4 bg-slate-50 border border-slate-200/60 rounded-xl space-y-3 relative group">
               {education.length > 1 && (
                 <button
@@ -241,28 +243,28 @@ export default function FormSection() {
                 <input
                   type="text"
                   placeholder="Məktəb / Universitet"
-                  value={edu.school}
+                  value={edu.school || ''}
                   onChange={(e) => handleEducationChange(edu.id, 'school', e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
                 <input
                   type="text"
                   placeholder="İxtisas / Dərəcə"
-                  value={edu.degree}
+                  value={edu.degree || ''}
                   onChange={(e) => handleEducationChange(edu.id, 'degree', e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
                 <input
                   type="text"
                   placeholder="Başlama Tarixi"
-                  value={edu.startDate}
+                  value={edu.startDate || ''}
                   onChange={(e) => handleEducationChange(edu.id, 'startDate', e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
                 <input
                   type="text"
                   placeholder="Bitmə Tarixi"
-                  value={edu.endDate}
+                  value={edu.endDate || ''}
                   onChange={(e) => handleEducationChange(edu.id, 'endDate', e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
