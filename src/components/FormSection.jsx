@@ -198,7 +198,7 @@ export default function FormSection() {
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
                 
-                {/* --- YENİLƏNMİŞ TARİX INPUTLARI --- */}
+                {/* --- MƏQSƏDYÖNLÜ INPUTLAR --- */}
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Başlama Tarixi</label>
                   <div className="relative flex items-center">
@@ -207,7 +207,7 @@ export default function FormSection() {
                       type="month"
                       value={exp.startDate || ''}
                       onChange={(e) => handleExperienceChange(exp.id, 'startDate', e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 cursor-pointer shadow-sm"
+                      className="w-full pl-9 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm"
                     />
                   </div>
                 </div>
@@ -219,7 +219,7 @@ export default function FormSection() {
                       type="month"
                       value={exp.endDate || ''}
                       onChange={(e) => handleExperienceChange(exp.id, 'endDate', e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 cursor-pointer shadow-sm"
+                      className="w-full pl-9 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm"
                     />
                   </div>
                 </div>
@@ -285,7 +285,6 @@ export default function FormSection() {
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
                 
-                {/* --- YENİLƏNMİŞ TARİX INPUTLARI (TƏHSİL) --- */}
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Başlama Tarixi</label>
                   <div className="relative flex items-center">
@@ -294,7 +293,7 @@ export default function FormSection() {
                       type="month"
                       value={edu.startDate || ''}
                       onChange={(e) => handleEducationChange(edu.id, 'startDate', e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 cursor-pointer shadow-sm"
+                      className="w-full pl-9 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm"
                     />
                   </div>
                 </div>
@@ -306,7 +305,7 @@ export default function FormSection() {
                       type="month"
                       value={edu.endDate || ''}
                       onChange={(e) => handleEducationChange(edu.id, 'endDate', e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 cursor-pointer shadow-sm"
+                      className="w-full pl-9 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm"
                     />
                   </div>
                 </div>
