@@ -79,6 +79,26 @@ export default function FormSection() {
     }));
   };
 
+  // Klaviaturadan ancaq rəqəm, silmə, ox işarələri və tireyə icazə veririk, hərfləri bloklayırıq
+  const handleDateKeyDown = (e) => {
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'];
+    if (allowedKeys.includes(e.key) || /^[0-9-]$/.test(e.key)) {
+      return;
+    }
+    e.preventDefault();
+  };
+
+  // Klikləyəndə təqvimi dərhal açan funksiyanı qoruyuruq
+  const openCalendarPicker = (e) => {
+    if (e.target.showPicker) {
+      try {
+        e.target.showPicker();
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   return (
     <div className="space-y-8 max-w-xl mx-auto pb-12">
       
@@ -198,7 +218,7 @@ export default function FormSection() {
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
                 
-                {/* --- MƏQSƏDYÖNLÜ INPUTLAR --- */}
+                {/* --- TARİX SEÇİCİLƏRİ (İŞ) --- */}
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Başlama Tarixi</label>
                   <div className="relative flex items-center">
@@ -206,8 +226,10 @@ export default function FormSection() {
                     <input
                       type="month"
                       value={exp.startDate || ''}
+                      onClick={openCalendarPicker}
+                      onKeyDown={handleDateKeyDown}
                       onChange={(e) => handleExperienceChange(exp.id, 'startDate', e.target.value)}
-                      className="w-full pl-9 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm"
+                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
                     />
                   </div>
                 </div>
@@ -218,8 +240,10 @@ export default function FormSection() {
                     <input
                       type="month"
                       value={exp.endDate || ''}
+                      onClick={openCalendarPicker}
+                      onKeyDown={handleDateKeyDown}
                       onChange={(e) => handleExperienceChange(exp.id, 'endDate', e.target.value)}
-                      className="w-full pl-9 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm"
+                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
                     />
                   </div>
                 </div>
@@ -285,6 +309,7 @@ export default function FormSection() {
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
                 />
                 
+                {/* --- TARİX SEÇİCİLƏRİ (TƏHSİL) --- */}
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Başlama Tarixi</label>
                   <div className="relative flex items-center">
@@ -292,8 +317,10 @@ export default function FormSection() {
                     <input
                       type="month"
                       value={edu.startDate || ''}
+                      onClick={openCalendarPicker}
+                      onKeyDown={handleDateKeyDown}
                       onChange={(e) => handleEducationChange(edu.id, 'startDate', e.target.value)}
-                      className="w-full pl-9 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm"
+                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
                     />
                   </div>
                 </div>
@@ -304,8 +331,10 @@ export default function FormSection() {
                     <input
                       type="month"
                       value={edu.endDate || ''}
+                      onClick={openCalendarPicker}
+                      onKeyDown={handleDateKeyDown}
                       onChange={(e) => handleEducationChange(edu.id, 'endDate', e.target.value)}
-                      className="w-full pl-9 pr-2 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm"
+                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
                     />
                   </div>
                 </div>

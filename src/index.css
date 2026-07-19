@@ -9,12 +9,11 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #f1f5f9; /* Bizim premium minimalist fon rəngimiz */
+  background-color: #f1f5f9;
   color: #0f172a;
   min-height: 100vh;
 }
 
-/* Vite-ın yaratdığı məhdudiyyətləri tam təmizləyirik */
 #root {
   width: 100% !important;
   max-width: 100% !important;
@@ -23,7 +22,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  text-align: left; /* Mərkəzləşdirməni ləğv edirik */
+  text-align: left;
   border: none !important;
 }
 
@@ -35,7 +34,7 @@ body {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-/* 3. Custom Scrollbar Dvijeniyası */
+/* 3. Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -54,19 +53,22 @@ body {
   background: #94a3b8;
 }
 
-/* 4. Modern Tarix Seçici (Month Picker) Ayarları */
+/* 4. TAILWIND V4 RESETİNİ DAĞIDAN AY/İL AYARLARI */
 input[type="month"] {
+  appearance: auto !important; /* Tailwind-in none dvijeniyasını sıfırlayırıq */
+  -webkit-appearance: textfield !important; /* MacBook/Safari mühiti üçün məcburi format */
   position: relative;
 }
 
+/* İkonun daxili vəziyyətini yenidən canlandırırıq */
 input[type="month"]::-webkit-calendar-picker-indicator {
+  display: block !important;
   cursor: pointer;
-  padding: 4px;
-  margin-right: 2px;
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
-}
-
-input[type="month"]::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
+  opacity: 1 !important;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
 }
