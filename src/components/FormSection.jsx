@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { CVContext } from '../context/CVContext';
 import { User, Mail, Phone, Globe, MapPin, AlignLeft, Layout, Briefcase, GraduationCap, Plus, Trash2, Calendar } from 'lucide-react';
 
@@ -6,6 +6,16 @@ export default function FormSection() {
   const { cvData, updatePersonalInfo, template, setTemplate, setCvData } = useContext(CVContext);
   
   const { personalInfo, experience = [], education = [], skills = [], languages = [] } = cvData || {};
+
+  // --- Aktiv Tabı İdarə Edən State ---
+  const [activeTab, setActiveTab] = useState('personal'); 
+
+  const tabs = [
+    { id: 'personal', label: 'Şəxsi', icon: <User size={15} /> },
+    { id: 'experience', label: 'Təcrübə', icon: <Briefcase size={15} /> },
+    { id: 'education', label: 'Təhsil', icon: <GraduationCap size={15} /> },
+    { id: 'skills', label: 'Bacarıq/Dil', icon: <Layout size={15} /> }
+  ];
 
   const inputFields = [
     { label: 'Tam Adınız', field: 'fullName', icon: <User size={16} />, placeholder: 'Agshin Heybatli' },
@@ -79,7 +89,6 @@ export default function FormSection() {
     }));
   };
 
-  // Klaviaturadan ancaq rəqəm, silmə, ox işarələri və tireyə icazə veririk, hərfləri bloklayırıq
   const handleDateKeyDown = (e) => {
     const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'];
     if (allowedKeys.includes(e.key) || /^[0-9-]$/.test(e.key)) {
@@ -88,7 +97,6 @@ export default function FormSection() {
     e.preventDefault();
   };
 
-  // Klikləyəndə təqvimi dərhal açan funksiyanı qoruyuruq
   const openCalendarPicker = (e) => {
     if (e.target.showPicker) {
       try {
@@ -100,7 +108,7 @@ export default function FormSection() {
   };
 
   return (
-    <div className="space-y-8 max-w-xl mx-auto pb-12">
+    <div className="space-y-6 max-w-xl mx-auto pb-12">
       
       {/* 0. Şablon Seçim Paneli */}
       <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 shadow-inner">
@@ -114,7 +122,7 @@ export default function FormSection() {
               key={t}
               type="button"
               onClick={() => setTemplate(t)}
-              className={`py-2.5 px-3 rounded-xl text-xs font-semibold uppercase tracking-wider border capitalize transition-all cursor-pointer ${
+              className={`py-2 px-3 rounded-xl text-xs font-semibold uppercase tracking-wider border capitalize transition-all cursor-pointer ${
                 template === t
                   ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/10 scale-[1.01]'
                   : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
@@ -126,273 +134,303 @@ export default function FormSection() {
         </div>
       </div>
 
-      {/* 1. Şəxsi Məlumatlar */}
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <User className="text-indigo-600" size={18} />
-            Şəxsi Məlumatlar
-          </h2>
-          <p className="text-xs text-slate-400 mt-0.5">CV-nin yuxarı hissəsində görünəcək əlaqə məlumatları.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {inputFields.map(({ label, field, icon, placeholder, type = 'text' }) => (
-            <div key={field} className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">{label}</label>
-              <div className="relative flex items-center">
-                <span className="absolute left-3 text-slate-400">{icon}</span>
-                <input
-                  type={type}
-                  placeholder={placeholder}
-                  value={personalInfo?.[field] || ''}
-                  onChange={(e) => updatePersonalInfo(field, e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider flex items-center gap-1">
-            <AlignLeft size={14} />
-            Haqqımda (Xülasə)
-          </label>
-          <textarea
-            rows={3}
-            placeholder="Təcrübəniz və hədəfləriniz haqqında qısa xülasə..."
-            value={personalInfo?.summary || ''}
-            onChange={(e) => updatePersonalInfo('summary', e.target.value)}
-            className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm resize-none"
-          />
-        </div>
+      {/* 📌 PREMIUM MINIMALIST TAB BAR PANELI */}
+      <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200/80 sticky top-0 bg-opacity-90 backdrop-blur-sm z-10 shadow-sm">
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              activeTab === tab.id
+                ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/40'
+                : 'text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            {tab.icon}
+            <span className="hidden sm:inline">{tab.label}</span>
+          </button>
+        ))}
       </div>
 
-      {/* 2. İş Təcrübəsi Bölməsi */}
-      <div className="space-y-4 pt-4 border-t border-slate-100">
-        <div className="flex items-center justify-between">
+      {/* ==================== TAB CONTENT BÖLMƏLƏRİ ==================== */}
+
+      {/* 1. Şəxsi Məlumatlar Tabı */}
+      {activeTab === 'personal' && (
+        <div className="space-y-4 animate-fadeIn">
           <div>
             <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <Briefcase className="text-indigo-600" size={18} />
-              İş Təcrübəsi
+              <User className="text-indigo-600" size={18} />
+              Şəxsi Məlumatlar
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">Son iş yerinizdən başlayaraq sıralayın.</p>
+            <p className="text-xs text-slate-400 mt-0.5">CV-nin yuxarı hissəsində görünəcək əlaqə məlumatları.</p>
           </div>
-          <button
-            type="button"
-            onClick={addExperience}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
-          >
-            <Plus size={14} /> Əlavə et
-          </button>
-        </div>
 
-        <div className="space-y-4">
-          {experience?.map((exp, index) => (
-            <div key={exp.id} className="p-4 bg-slate-50 border border-slate-200/60 rounded-xl space-y-3 relative group">
-              {experience.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeExperience(exp.id)}
-                  className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 p-1 rounded-lg transition-colors cursor-pointer"
-                >
-                  <Trash2 size={16} />
-                </button>
-              )}
-              <span className="text-xs font-bold text-slate-400 bg-white border border-slate-200/60 px-2 py-0.5 rounded-md">#{index + 1}</span>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  placeholder="Şirkət / Müəssisə"
-                  value={exp.company || ''}
-                  onChange={(e) => handleExperienceChange(exp.id, 'company', e.target.value)}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
-                />
-                <input
-                  type="text"
-                  placeholder="Vəzifə / Rol"
-                  value={exp.role || ''}
-                  onChange={(e) => handleExperienceChange(exp.id, 'role', e.target.value)}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
-                />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {inputFields.map(({ label, field, icon, placeholder, type = 'text' }) => (
+              <div key={field} className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">{label}</label>
+                <div className="relative flex items-center">
+                  <span className="absolute left-3 text-slate-400">{icon}</span>
+                  <input
+                    type={type}
+                    placeholder={placeholder}
+                    value={personalInfo?.[field] || ''}
+                    onChange={(e) => updatePersonalInfo(field, e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider flex items-center gap-1">
+              <AlignLeft size={14} />
+              Haqqımda (Xülasə)
+            </label>
+            <textarea
+              rows={4}
+              placeholder="Təcrübəniz və hədəfləriniz haqqında qısa xülasə..."
+              value={personalInfo?.summary || ''}
+              onChange={(e) => updatePersonalInfo('summary', e.target.value)}
+              className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm resize-none"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* 2. İş Təcrübəsi Tabı */}
+      {activeTab === 'experience' && (
+        <div className="space-y-4 animate-fadeIn">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                <Briefcase className="text-indigo-600" size={18} />
+                İş Təcrübəsi
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">Son iş yerinizdən başlayaraq sıralayın.</p>
+            </div>
+            <button
+              type="button"
+              onClick={addExperience}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+            >
+              <Plus size={14} /> Əlavə et
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {experience?.map((exp, index) => (
+              <div key={exp.id} className="p-4 bg-slate-50 border border-slate-200/60 rounded-xl space-y-3 relative group">
+                {experience.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeExperience(exp.id)}
+                    className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 p-1 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
+                <span className="text-xs font-bold text-slate-400 bg-white border border-slate-200/60 px-2 py-0.5 rounded-md">#{index + 1}</span>
                 
-                {/* --- TARİX SEÇİCİLƏRİ (İŞ) --- */}
-                <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Başlama Tarixi</label>
-                  <div className="relative flex items-center">
-                    <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
-                    <input
-                      type="month"
-                      value={exp.startDate || ''}
-                      onClick={openCalendarPicker}
-                      onKeyDown={handleDateKeyDown}
-                      onChange={(e) => handleExperienceChange(exp.id, 'startDate', e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    placeholder="Şirkət / Müəssisə"
+                    value={exp.company || ''}
+                    onChange={(e) => handleExperienceChange(exp.id, 'company', e.target.value)}
+                    className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Vəzifə / Rol"
+                    value={exp.role || ''}
+                    onChange={(e) => handleExperienceChange(exp.id, 'role', e.target.value)}
+                    className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
+                  />
+                  
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Başlama Tarixi</label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
+                      <input
+                        type="month"
+                        value={exp.startDate || ''}
+                        onClick={openCalendarPicker}
+                        onKeyDown={handleDateKeyDown}
+                        onChange={(e) => handleExperienceChange(exp.id, 'startDate', e.target.value)}
+                        className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Bitmə Tarixi</label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
+                      <input
+                        type="month"
+                        value={exp.endDate || ''}
+                        onClick={openCalendarPicker}
+                        onKeyDown={handleDateKeyDown}
+                        onChange={(e) => handleExperienceChange(exp.id, 'endDate', e.target.value)}
+                        className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Bitmə Tarixi</label>
-                  <div className="relative flex items-center">
-                    <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
-                    <input
-                      type="month"
-                      value={exp.endDate || ''}
-                      onClick={openCalendarPicker}
-                      onKeyDown={handleDateKeyDown}
-                      onChange={(e) => handleExperienceChange(exp.id, 'endDate', e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
-                    />
+                <textarea
+                  rows={3}
+                  placeholder="Gördüyünüz işlər və nailiyyətlər haqqında qısa məlumat..."
+                  value={exp.description || ''}
+                  onChange={(e) => handleExperienceChange(exp.id, 'description', e.target.value)}
+                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm resize-none"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 3. Təhsil Tabı */}
+      {activeTab === 'education' && (
+        <div className="space-y-4 animate-fadeIn">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                <GraduationCap className="text-indigo-600" size={18} />
+                Təhsil
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">Akademik keçmişinizi əlavə edin.</p>
+            </div>
+            <button
+              type="button"
+              onClick={addEducation}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+            >
+              <Plus size={14} /> Əlavə et
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {education?.map((edu, index) => (
+              <div key={edu.id} className="p-4 bg-slate-50 border border-slate-200/60 rounded-xl space-y-3 relative group">
+                {education.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeEducation(edu.id)}
+                    className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 p-1 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
+                <span className="text-xs font-bold text-slate-400 bg-white border border-slate-200/60 px-2 py-0.5 rounded-md">#{index + 1}</span>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    placeholder="Məktəb / Universitet"
+                    value={edu.school || ''}
+                    onChange={(e) => handleEducationChange(edu.id, 'school', e.target.value)}
+                    className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
+                  />
+                  <input
+                    type="text"
+                    placeholder="İxtisas / Dərəcə"
+                    value={edu.degree || ''}
+                    onChange={(e) => handleEducationChange(edu.id, 'degree', e.target.value)}
+                    className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
+                  />
+                  
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Başlama Tarixi</label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
+                      <input
+                        type="month"
+                        value={edu.startDate || ''}
+                        onClick={openCalendarPicker}
+                        onKeyDown={handleDateKeyDown}
+                        onChange={(e) => handleEducationChange(edu.id, 'startDate', e.target.value)}
+                        className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Bitmə Tarixi</label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
+                      <input
+                        type="month"
+                        value={edu.endDate || ''}
+                        onClick={openCalendarPicker}
+                        onKeyDown={handleDateKeyDown}
+                        onChange={(e) => handleEducationChange(edu.id, 'endDate', e.target.value)}
+                        className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-              <textarea
-                rows={2}
-                placeholder="Gördüyünüz işlər və nailiyyətlər haqqında qısa məlumat..."
-                value={exp.description || ''}
-                onChange={(e) => handleExperienceChange(exp.id, 'description', e.target.value)}
-                className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm resize-none"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. Təhsil Bölməsi */}
-      <div className="space-y-4 pt-4 border-t border-slate-100">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <GraduationCap className="text-indigo-600" size={18} />
-              Təhsil
-            </h2>
-            <p className="text-xs text-slate-400 mt-0.5">Akademik keçmişinizi əlavə edin.</p>
+            ))}
           </div>
-          <button
-            type="button"
-            onClick={addEducation}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
-          >
-            <Plus size={14} /> Əlavə et
-          </button>
         </div>
+      )}
 
-        <div className="space-y-4">
-          {education?.map((edu, index) => (
-            <div key={edu.id} className="p-4 bg-slate-50 border border-slate-200/60 rounded-xl space-y-3 relative group">
-              {education.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeEducation(edu.id)}
-                  className="absolute top-4 right-4 text-slate-400 hover:text-rose-500 p-1 rounded-lg transition-colors cursor-pointer"
-                >
-                  <Trash2 size={16} />
-                </button>
-              )}
-              <span className="text-xs font-bold text-slate-400 bg-white border border-slate-200/60 px-2 py-0.5 rounded-md">#{index + 1}</span>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  placeholder="Məktəb / Universitet"
-                  value={edu.school || ''}
-                  onChange={(e) => handleEducationChange(edu.id, 'school', e.target.value)}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
-                />
-                <input
-                  type="text"
-                  placeholder="İxtisas / Dərəcə"
-                  value={edu.degree || ''}
-                  onChange={(e) => handleEducationChange(edu.id, 'degree', e.target.value)}
-                  className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
-                />
-                
-                {/* --- TARİX SEÇİCİLƏRİ (TƏHSİL) --- */}
-                <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Başlama Tarixi</label>
-                  <div className="relative flex items-center">
-                    <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
-                    <input
-                      type="month"
-                      value={edu.startDate || ''}
-                      onClick={openCalendarPicker}
-                      onKeyDown={handleDateKeyDown}
-                      onChange={(e) => handleEducationChange(edu.id, 'startDate', e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Bitmə Tarixi</label>
-                  <div className="relative flex items-center">
-                    <span className="absolute left-3 text-slate-400 pointer-events-none"><Calendar size={14} /></span>
-                    <input
-                      type="month"
-                      value={edu.endDate || ''}
-                      onClick={openCalendarPicker}
-                      onKeyDown={handleDateKeyDown}
-                      onChange={(e) => handleEducationChange(edu.id, 'endDate', e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 focus:outline-none focus:border-indigo-500 shadow-sm cursor-pointer"
-                    />
-                  </div>
-                </div>
-              </div>
+      {/* 4. Bacarıqlar və Dillər Tabı */}
+      {activeTab === 'skills' && (
+        <div className="space-y-6 animate-fadeIn">
+          {/* Bacarıqlar */}
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                <Layout className="text-indigo-600" size={18} />
+                Bacarıqlar (Skills)
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">Texnologiya və ya alətləri yazıb Enter sıxın.</p>
             </div>
-          ))}
-        </div>
-      </div>
+            <input
+              type="text"
+              placeholder="Məs: React, Node.js, TypeScript..."
+              onKeyDown={(e) => handleAddTag(e, 'skills')}
+              className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+            />
+            <div className="flex flex-wrap gap-2">
+              {skills?.map(skill => (
+                <span key={skill} className="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 text-xs font-medium px-3 py-1 rounded-lg border border-indigo-100">
+                  {skill}
+                  <button type="button" onClick={() => handleRemoveTag(skill, 'skills')} className="hover:text-rose-600 font-bold cursor-pointer">×</button>
+                </span>
+              ))}
+            </div>
+          </div>
 
-      {/* 4. Bacarıqlar (Skills) */}
-      <div className="space-y-4 pt-4 border-t border-slate-100">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <Layout className="text-indigo-600" size={18} />
-            Bacarıqlar (Skills)
-          </h2>
-          <p className="text-xs text-slate-400 mt-0.5">Texnologiya və ya alətləri yazıb Enter sıxın.</p>
+          {/* Dillər */}
+          <div className="space-y-4 pt-4 border-t border-slate-100">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                <Globe className="text-indigo-600" size={18} />
+                Xarici Dillər
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">Bildiyiniz dilləri yazıb Enter sıxın.</p>
+            </div>
+            <input
+              type="text"
+              placeholder="Məs: İngilis dili (C1), Azərbaycan dili..."
+              onKeyDown={(e) => handleAddTag(e, 'languages')}
+              className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+                />
+            <div className="flex flex-wrap gap-2">
+              {languages?.map(lang => (
+                <span key={lang} className="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-lg border border-slate-200">
+                  {lang}
+                  <button type="button" onClick={() => handleRemoveTag(lang, 'languages')} className="hover:text-rose-600 font-bold cursor-pointer">×</button>
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
-        <input
-          type="text"
-          placeholder="Məs: React, Node.js, TypeScript..."
-          onKeyDown={(e) => handleAddTag(e, 'skills')}
-          className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
-        />
-        <div className="flex flex-wrap gap-2">
-          {skills?.map(skill => (
-            <span key={skill} className="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 text-xs font-medium px-3 py-1 rounded-lg border border-indigo-100">
-              {skill}
-              <button type="button" onClick={() => handleRemoveTag(skill, 'skills')} className="hover:text-rose-600 font-bold cursor-pointer">×</button>
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* 5. Xarici Dillər (Languages) */}
-      <div className="space-y-4 pt-4 border-t border-slate-100">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <Globe className="text-indigo-600" size={18} />
-            Xarici Dillər
-          </h2>
-          <p className="text-xs text-slate-400 mt-0.5">Bildiyiniz dilləri yazıb Enter sıxın.</p>
-        </div>
-        <input
-          type="text"
-          placeholder="Məs: İngilis dili (C1), Azərbaycan dili..."
-          onKeyDown={(e) => handleAddTag(e, 'languages')}
-          className="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
-        />
-        <div className="flex flex-wrap gap-2">
-          {languages?.map(lang => (
-            <span key={lang} className="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 text-xs font-medium px-3 py-1 rounded-lg border border-slate-200">
-              {lang}
-              <button type="button" onClick={() => handleRemoveTag(lang, 'languages')} className="hover:text-rose-600 font-bold cursor-pointer">×</button>
-            </span>
-          ))}
-        </div>
-      </div>
+      )}
 
     </div>
   );
